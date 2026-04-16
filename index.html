@@ -763,10 +763,7 @@
     </nav>
 
     <!-- Kontainer Iframe YouTube Tersembunyi -->
-    <div
-      id="youtube-audio-container"
-      class="hidden opacity-0 pointer-events-none absolute -z-50"
-    ></div>
+    <audio id="bg-music" src="Lagu.mp3" loop preload="auto"></audio>
 
     <script>
       // --- 1. Fungsi Ledakan Confetti & Buka Kado ---
@@ -806,9 +803,10 @@
         fireConfetti();
 
         // Putar Youtube (Joy Enriquez)
-        ytContainer.innerHTML =
-          '<iframe style="border:none;" width="1" height="1" src="https://youtu.be/nAw2ooeubSQ?si=9g1UDNT0fgbzZgGn" allow="autoplay; encrypted-media"></iframe>';
-
+        // Putar Audio MP3
+        const bgMusic = document.getElementById("bg-music");
+        bgMusic.volume = 0.8; // Mengatur volume 80%
+        bgMusic.play().catch((e) => console.log("Audio diblokir browser:", e));
         // Animasi cover menghilang
         cover.classList.add("open");
 
