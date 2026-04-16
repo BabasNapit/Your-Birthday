@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selamat Ulang Tahun Sayang! 💖</title>
+
+    <link
+      rel="icon"
+      href="icon.png"
+    />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Canvas Confetti Library untuk Efek Kejutan Ledakan -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "cute-1": "#FE81D4" /* Hot Pink */,
+              "cute-2": "#FAACBF" /* Soft Pink */,
+              "cute-3": "#FBC3C1" /* Peach Pink */,
+              "cute-4": "#FFEABB" /* Krem */,
+            },
+            fontFamily: {
+              sans: ["Quicksand", "sans-serif"],
+              handwriting: ["Pacifico", "cursive"],
+            },
+            animation: {
+              "bounce-slow": "bounce 3s infinite",
+              float: "float 4s ease-in-out infinite",
+              "float-delayed": "float 4s ease-in-out infinite 2s",
+              wiggle: "wiggle 2s ease-in-out infinite",
+              "pulse-cute": "pulse-cute 2s infinite",
+              blob: "blob 7s infinite",
+              "spin-slow": "spin 8s linear infinite",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0) rotate(0deg)" },
+                "50%": { transform: "translateY(-20px) rotate(5deg)" },
+              },
+              wiggle: {
+                "0%, 100%": { transform: "rotate(-10deg) scale(1)" },
+                "50%": { transform: "rotate(10deg) scale(1.1)" },
+              },
+              "pulse-cute": {
+                "0%": {
+                  transform: "scale(1)",
+                  boxShadow: "0 0 0 0 rgba(254, 129, 212, 0.7)",
+                },
+                "70%": {
+                  transform: "scale(1.1)",
+                  boxShadow: "0 0 0 15px rgba(254, 129, 212, 0)",
+                },
+                "100%": {
+                  transform: "scale(1)",
+                  boxShadow: "0 0 0 0 rgba(254, 129, 212, 0)",
+                },
+              },
+              blob: {
+                "0%": { borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" },
+                "50%": { borderRadius: "30% 60% 70% 40% / 50% 60% 30% 60%" },
+                "100%": { borderRadius: "60% 40% 30% 70% / 60% 30% 70% 40%" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        /* Latar belakang krem dengan pattern polka dot samar yang super gemas */
+        background-color: #ffeabb;
+        background-image: radial-gradient(#faacbf 2px, transparent 2px);
+        background-size: 30px 30px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+      }
+
+      /* Partikel Background */
+      .particle {
+        position: fixed;
+        pointer-events: none;
+        z-index: 0;
+        animation: floatUp linear infinite;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(100vh) scale(0) rotate(0deg);
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.8;
+          transform: translateY(80vh) scale(1.2) rotate(45deg);
+        }
+        80% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-10vh) scale(0.5) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Trail Cursor Hati */
+      .cursor-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        color: #fe81d4;
+        animation: fadeOutTrail 1s forwards;
+      }
+      @keyframes fadeOutTrail {
+        0% {
+          opacity: 1;
+          transform: scale(1) translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.5) translateY(-20px);
+        }
+      }
+
+      /* Animasi Buka Kado */
+      #cover-screen {
+        transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+      #cover-screen.open {
+        opacity: 0;
+        transform: translateY(-100vh) scale(0.5) rotate(20deg);
+        pointer-events: none;
+      }
+
+      /* Efek Scroll Reveal dengan Pantulan (Jelly Pop) */
+      .reveal {
+        opacity: 0;
+        transform: translateY(80px) scale(0.8);
+        transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      /* Blob Shape Frame */
+      .blob-frame {
+        animation: blob 7s ease-in-out infinite;
+        box-shadow:
+          0 20px 30px rgba(254, 129, 212, 0.3),
+          inset 0 0 0 8px #fff;
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* Polaroid Swing Effect */
+      .polaroid {
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transform-origin: top center;
+      }
+      .polaroid:hover {
+        transform: scale(1.15) rotate(0deg) !important;
+        z-index: 20;
+        box-shadow: 0 30px 40px -10px rgba(254, 129, 212, 0.4);
+      }
+
+      /* Pin Polaroid */
+      .polaroid::before {
+        content: "";
+        position: absolute;
+        top: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 12px;
+        height: 12px;
+        background-color: #fe81d4;
+        border-radius: 50%;
+        box-shadow:
+          inset -2px -2px 4px rgba(0, 0, 0, 0.3),
+          0 2px 4px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+      }
+
+      /* Kustom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #ffeabb;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #faacbf;
+        border-radius: 20px;
+        border: 3px solid #ffeabb;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #fe81d4;
+      }
+
+      /* Wavy SVG Divider */
+      .wave-divider {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+      }
+      .wave-divider svg {
+        position: relative;
+        display: block;
+        width: calc(100% + 1.3px);
+        height: 60px;
+      }
+    </style>
+  </head>
+  <body
+    class="antialiased text-gray-800 relative selection:bg-cute-2 selection:text-white pb-24"
+    onmousemove="createTrail(event)"
+  >
+    <!-- Partikel Background Layer -->
+    <div
+      id="particles-container"
+      class="fixed inset-0 pointer-events-none z-0"
+    ></div>
+
+    <!-- 1. COVER SCREEN (Hadiah Kejutan) -->
+    <div
+      id="cover-screen"
+      class="fixed inset-0 bg-cute-4 flex flex-col items-center justify-center z-[100] border-[16px] border-dashed border-cute-3"
+    >
+      <div
+        class="text-center p-8 bg-white rounded-[50px] shadow-2xl border-[6px] border-cute-2 max-w-sm w-[90%] transform transition duration-300 relative overflow-visible group hover:scale-105"
+      >
+        <!-- Bintang-bintang melayang di sekitar kado -->
+        <i
+          class="fa-solid fa-star text-cute-1 absolute -top-6 -left-4 text-2xl animate-spin-slow"
+        ></i>
+        <i
+          class="fa-solid fa-star text-cute-3 absolute top-10 -right-6 text-3xl animate-float"
+        ></i>
+        <i
+          class="fa-solid fa-heart text-cute-1 absolute -bottom-4 -left-6 text-2xl animate-bounce-slow"
+        ></i>
+
+        <div
+          class="group-hover:animate-wiggle transition-all cursor-pointer"
+          onclick="openWebsite()"
+        >
+          <i
+            class="fa-solid fa-gift text-8xl text-cute-1 mb-4 drop-shadow-lg"
+          ></i>
+        </div>
+
+        <h1
+          class="font-handwriting text-4xl text-cute-1 mb-2 transform group-hover:scale-110 transition-transform"
+        >
+          Kejutan Buatmu!
+        </h1>
+        <p
+          class="text-gray-600 mb-8 font-bold text-sm bg-cute-4 p-3 rounded-2xl border-2 border-cute-3 mt-4 relative"
+        >
+          <i
+            class="fa-solid fa-caret-up absolute -top-4 left-1/2 transform -translate-x-1/2 text-cute-3 text-2xl"
+          ></i>
+          Hanya untuk sayang aku,<br />
+          <span class="text-cute-1 text-lg block mt-1"
+            >Ruth Intan Berliana Aritonang</span
+          >
+          💖💖💖💖💖💖💖💖
+        </p>
+        <button
+          onclick="openWebsite()"
+          class="animate-pulse-cute bg-gradient-to-r from-cute-1 to-cute-2 hover:from-pink-500 hover:to-cute-1 text-white font-black py-4 px-8 rounded-[30px] shadow-[0_10px_20px_rgba(254,129,212,0.4)] transition duration-300 flex items-center justify-center w-full text-xl group/btn"
+        >
+          <i
+            class="fa-solid fa-unlock-keyhole mr-3 group-hover/btn:rotate-12 transition-transform"
+          ></i>
+          Buka Hadiah
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. MAIN WEBSITE CONTENT -->
+    <div
+      id="main-content"
+      class="relative z-10 opacity-0 transition-opacity duration-1000 hidden"
+    >
+      <!-- SECTION 1: HERO / BERANDA -->
+      <section
+        id="beranda"
+        class="min-h-screen flex flex-col items-center justify-center pt-20 pb-20 px-4 text-center relative z-10"
+      >
+        <div class="reveal">
+          <div
+            class="inline-block bg-white px-6 py-2 rounded-full shadow-lg border-2 border-cute-2 mb-6 transform rotate-2 hover:-rotate-2 transition duration-300"
+          >
+            <p class="font-bold text-cute-1 text-lg">
+              <i class="fa-solid fa-calendar-star mr-2 animate-spin-slow"></i>
+              17 April 2026
+            </p>
+          </div>
+
+          <h3 class="font-handwriting text-3xl md:text-4xl text-cute-2 mb-2">
+            Selamat Ulang Tahun Ke-25
+          </h3>
+          <h1
+            class="font-handwriting text-6xl md:text-8xl text-cute-1 mb-4 drop-shadow-md animate-float relative inline-block"
+          >
+            Sayang Aku
+            <!-- Hati kecil melayang -->
+            <i
+              class="fa-solid fa-heart text-cute-2 text-2xl absolute -top-4 -right-8 animate-bounce-slow"
+            ></i>
+          </h1>
+          <h2
+            class="font-extrabold text-2xl md:text-4xl text-gray-700 mb-8 tracking-wide"
+          >
+            RUTH INTAN BERLIANA ARITONANG
+          </h2>
+        </div>
+
+        <!-- Foto Frame Blob (Gemas) -->
+        <div class="reveal mt-4">
+          <div
+            class="blob-frame w-64 h-64 md:w-[350px] md:h-[350px] mx-auto bg-white border-4 border-cute-1 relative group cursor-pointer"
+          >
+            <!-- FOTO PACAR: Ganti src gambar ini -->
+            <img
+              src="Foto (1).jpeg"
+              alt="Sayang Aku"
+              class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+            />
+
+            <div
+              class="absolute inset-0 bg-cute-1 opacity-0 group-hover:opacity-20 transition-opacity duration-300"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Indikator Scroll Bouncy -->
+        <div
+          class="absolute bottom-6 animate-bounce text-cute-1 flex flex-col items-center opacity-80 bg-white p-3 rounded-full shadow-lg border-2 border-cute-2"
+        >
+          <i class="fa-solid fa-arrow-down-long text-xl"></i>
+        </div>
+      </section>
+
+      <!-- Wavy Divider Top -->
+      <div
+        class="wave-divider transform rotate-180 -mt-1 relative z-20"
+        style="bottom: 0"
+      >
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            fill="#ffffff"
+          ></path>
+        </svg>
+      </div>
+
+      <!-- SECTION 2: SURAT CINTA -->
+      <section id="pesan" class="py-24 px-4 bg-white relative z-10">
+        <div class="max-w-3xl mx-auto">
+          <div class="reveal text-center mb-12 relative">
+            <i
+              class="fa-solid fa-envelope-open-heart text-6xl text-cute-3 mb-4 animate-wiggle"
+            ></i>
+            <h2 class="font-handwriting text-5xl text-cute-1">
+              Surat Untukmu 💌
+            </h2>
+          </div>
+
+          <div
+            class="reveal bg-cute-4 rounded-[40px] p-8 md:p-12 shadow-[0_20px_50px_rgba(254,129,212,0.2)] border-[8px] border-dashed border-cute-2 relative transform hover:-translate-y-2 transition-transform duration-500"
+          >
+            <i
+              class="fa-solid fa-quote-left text-6xl text-white drop-shadow-md absolute -top-8 -left-4 animate-float"
+            ></i>
+
+            <div class="relative z-10 text-center space-y-6 pt-4">
+              <p
+                class="text-lg md:text-2xl font-semibold text-gray-700 leading-relaxed"
+              >
+                Hari ini,
+                <span
+                  class="font-bold text-cute-1 bg-white px-2 py-1 rounded-lg shadow-sm transform -rotate-2 inline-block"
+                  >17 April 2026</span
+                >, hari ini adalah hari bahagia kamu sayang ku.
+              </p>
+              <p
+                class="text-lg md:text-2xl font-semibold text-gray-700 leading-relaxed"
+              >
+                aku tau aku masih belum bisa kasih sesuatu yang besar buat kamu,
+                namun aku berharap hadiah kecil ku ini dapat membuat kamu
+                senang.
+                <span
+                  class="font-bold text-cute-1 underline decoration-wavy decoration-cute-2"
+                  >Ruth Intan Berliana Aritonang</span
+                >.
+              </p>
+              <p
+                class="text-lg md:text-2xl font-semibold text-gray-700 leading-relaxed"
+              >
+                Tetaplah jadi wanita lembut, penyayang, dan menggemaskan yang
+                selalu bikin aku jatuh cinta setiap harinya.
+              </p>
+
+              <div class="pt-8 animate-pulse">
+                <p class="text-3xl md:text-4xl font-handwriting text-cute-1">
+                  I love you more than anything! 💕
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wavy Divider Bottom -->
+      <div class="wave-divider bg-white relative z-20">
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            fill="#FFEABB"
+          ></path>
+        </svg>
+      </div>
+
+      <!-- SECTION 3: DOA & HARAPAN -->
+      <section id="harapan" class="py-24 px-4 max-w-5xl mx-auto relative z-10">
+        <div class="reveal text-center mb-16">
+          <h2
+            class="font-handwriting text-5xl text-cute-1 inline-block relative"
+          >
+            Doa & Harapanku ✨
+            <span class="absolute -right-8 -top-8 text-4xl animate-spin-slow"
+              >🎈</span
+            >
+          </h2>
+          <p
+            class="text-gray-600 font-bold text-xl mt-3 bg-white inline-block px-6 py-2 rounded-full border-2 border-cute-3"
+          >
+            Di umurmu yang ke-25 tahun ini...
+          </p>
+        </div>
+
+        <!-- Menggunakan Flex wrap agar grid lebih dinamis dan imut -->
+        <div class="flex flex-wrap justify-center gap-6">
+          <!-- Harapan 1 -->
+          <div
+            class="reveal w-full md:w-[45%] bg-white p-6 rounded-[30px] shadow-xl border-4 border-cute-4 hover:border-cute-2 transition-all transform hover:-translate-y-3 flex items-center gap-5 group"
+          >
+            <div
+              class="bg-gradient-to-br from-cute-3 to-cute-1 w-16 h-16 rounded-[20px] flex items-center justify-center shrink-0 shadow-lg group-hover:rotate-12 transition-transform"
+            >
+              <i class="fa-solid fa-graduation-cap text-3xl text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-black text-cute-1 text-xl mb-1">Lulus Kuliah</h4>
+              <p class="text-gray-600 font-medium">
+                Semoga dilancarkan dan bisa lulus tahun ini. Aku selalu ada
+                nemenin prosesmu!
+              </p>
+            </div>
+          </div>
+
+          <!-- Harapan 2 -->
+          <div
+            class="reveal w-full md:w-[45%] bg-white p-6 rounded-[30px] shadow-xl border-4 border-cute-4 hover:border-cute-2 transition-all transform hover:-translate-y-3 flex items-center gap-5 group"
+            style="transition-delay: 100ms"
+          >
+            <div
+              class="bg-gradient-to-br from-cute-3 to-cute-1 w-16 h-16 rounded-[20px] flex items-center justify-center shrink-0 shadow-lg group-hover:-rotate-12 transition-transform"
+            >
+              <i
+                class="fa-solid fa-heart-pulse text-3xl text-white animate-pulse"
+              ></i>
+            </div>
+            <div>
+              <h4 class="font-black text-cute-1 text-xl mb-1">Sehat Selalu</h4>
+              <p class="text-gray-600 font-medium">
+                Biar kita bisa ketemu, kita lakukan semua wishlist yang udah
+                kita buat.
+              </p>
+            </div>
+          </div>
+
+          <!-- Harapan 3 -->
+          <div
+            class="reveal w-full md:w-[45%] bg-white p-6 rounded-[30px] shadow-xl border-4 border-cute-4 hover:border-cute-2 transition-all transform hover:-translate-y-3 flex items-center gap-5 group"
+            style="transition-delay: 200ms"
+          >
+            <div
+              class="bg-gradient-to-br from-cute-3 to-cute-1 w-16 h-16 rounded-[20px] flex items-center justify-center shrink-0 shadow-lg group-hover:rotate-12 transition-transform"
+            >
+              <i class="fa-solid fa-fire text-3xl text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-black text-cute-1 text-xl mb-1">
+                Sabar & Semangat
+              </h4>
+              <p class="text-gray-600 font-medium">
+                Tetap jadi wanita sabar. Selalu semangat dengan tantangan yang
+                kamu hadapi.
+              </p>
+            </div>
+          </div>
+
+          <!-- Harapan 4 -->
+          <div
+            class="reveal w-full md:w-[45%] bg-white p-6 rounded-[30px] shadow-xl border-4 border-cute-4 hover:border-cute-2 transition-all transform hover:-translate-y-3 flex items-center gap-5 group"
+            style="transition-delay: 300ms"
+          >
+            <div
+              class="bg-gradient-to-br from-cute-3 to-cute-1 w-16 h-16 rounded-[20px] flex items-center justify-center shrink-0 shadow-lg group-hover:-rotate-12 transition-transform"
+            >
+              <i class="fa-solid fa-ring text-3xl text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-black text-cute-1 text-xl mb-1">Satu-satunya</h4>
+              <p class="text-gray-600 font-medium">
+                Makin terbuka tentang apapun, dan jadikan aku satu-satunya
+                tempat kamu pulang. Aku selalu berusaha jadi yang terbaik buat
+                kamu.
+              </p>
+            </div>
+          </div>
+
+          <!-- Harapan 5 (Full Width Center) -->
+          <div
+            class="reveal w-full md:w-[60%] bg-white p-8 rounded-[40px] shadow-2xl border-4 border-cute-1 transform hover:-translate-y-3 flex flex-col items-center text-center gap-4 group mt-4 relative overflow-hidden"
+            style="transition-delay: 400ms"
+          >
+            <!-- Pita corner -->
+            <div
+              class="absolute -top-6 -left-6 w-16 h-16 bg-cute-2 rotate-45"
+            ></div>
+            <div
+              class="absolute -bottom-6 -right-6 w-16 h-16 bg-cute-2 rotate-45"
+            ></div>
+
+            <div
+              class="bg-gradient-to-br from-cute-1 to-pink-600 w-20 h-20 rounded-full flex items-center justify-center shadow-lg animate-bounce-slow"
+            >
+              <i class="fa-solid fa-piggy-bank text-4xl text-white"></i>
+            </div>
+            <div>
+              <h4 class="font-black text-cute-1 text-2xl mb-2">
+                Rajin Menabung
+              </h4>
+              <p class="text-gray-600 font-semibold text-lg">
+                Semoga makin pintar mengatur keuangan, rajin menabung juga
+                supaya bisa beli barang yang kamu suka. 💍💒
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: ALBUM FOTO -->
+      <section
+        id="album"
+        class="py-24 px-4 max-w-5xl mx-auto overflow-visible relative"
+      >
+        <div class="reveal text-center mb-16">
+          <h2
+            class="font-handwriting text-5xl text-cute-1 inline-block relative"
+          >
+            Album Kenangan 📸
+          </h2>
+          <br />
+          <p class="text-gray-600 font-bold text-xl mt-3">
+            Perjalanan cerita gemas kita...
+          </p>
+        </div>
+
+        <!-- Grid Album Polaroid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-12 px-2">
+          <!-- Foto 1 -->
+          <div
+            class="reveal polaroid bg-white p-3 md:p-4 pb-12 md:pb-16 shadow-xl transform rotate-[-6deg]"
+          >
+            <!-- <img src="..."> Ganti dengan foto asli kalian -->
+            <img
+              src="Foto (2).jpeg"
+              alt="Kenangan 1"
+              class="w-full aspect-square object-cover mb-4 border border-gray-200"
+            />
+            <p
+              class="font-handwriting text-center text-cute-1 text-xl md:text-2xl mt-2"
+            ></p>
+          </div>
+
+          <!-- Foto 2 -->
+          <div
+            class="reveal polaroid bg-white p-3 md:p-4 pb-12 md:pb-16 shadow-xl transform rotate-[5deg] md:mt-12"
+            style="transition-delay: 100ms"
+          >
+            <img
+              src="Foto (3).jpeg"
+              alt="Kenangan 2"
+              class="w-full aspect-square object-cover mb-4 border border-gray-200"
+            />
+            <p
+              class="font-handwriting text-center text-cute-1 text-xl md:text-2xl mt-2"
+            ></p>
+          </div>
+
+          <!-- Foto 3 -->
+          <div
+            class="reveal polaroid bg-white p-3 md:p-4 pb-12 md:pb-16 shadow-xl transform rotate-[-4deg]"
+            style="transition-delay: 200ms"
+          >
+            <img
+              src="Foto (8).jpeg"
+              alt="Kenangan 3"
+              class="w-full aspect-square object-cover mb-4 border border-gray-200"
+            />
+            <p
+              class="font-handwriting text-center text-cute-1 text-xl md:text-2xl mt-2"
+            ></p>
+          </div>
+
+          <!-- Foto 4 -->
+          <div
+            class="reveal polaroid bg-white p-3 md:p-4 pb-12 md:pb-16 shadow-xl transform rotate-[6deg]"
+            style="transition-delay: 300ms"
+          >
+            <img
+              src="Foto (5).jpeg"
+              alt="Kenangan 4"
+              class="w-full aspect-square object-cover mb-4 border border-gray-200"
+            />
+            <p
+              class="font-handwriting text-center text-cute-1 text-xl md:text-2xl mt-2"
+            ></p>
+          </div>
+
+          <!-- Foto 5 -->
+          <div
+            class="reveal polaroid bg-white p-3 md:p-4 pb-12 md:pb-16 shadow-xl transform rotate-[-5deg] md:mt-12"
+            style="transition-delay: 400ms"
+          >
+            <img
+              src="Foto (6).jpeg"
+              alt="Kenangan 5"
+              class="w-full aspect-square object-cover mb-4 border border-gray-200"
+            />
+            <p
+              class="font-handwriting text-center text-cute-1 text-xl md:text-2xl mt-2"
+            ></p>
+          </div>
+
+          <!-- Foto 6 -->
+          <div
+            class="reveal polaroid bg-white p-3 md:p-4 pb-12 md:pb-16 shadow-xl transform rotate-[4deg]"
+            style="transition-delay: 500ms"
+          >
+            <img
+              src="Foto (7).jpeg"
+              alt="Kenangan 6"
+              class="w-full aspect-square object-cover mb-4 border border-gray-200"
+            />
+            <p
+              class="font-handwriting text-center text-cute-1 text-xl md:text-2xl mt-2"
+            ></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER / AKSI -->
+      <footer
+        class="py-16 text-center border-t-4 border-dashed border-cute-3 mt-10 bg-white relative"
+      >
+        <h3
+          class="font-handwriting text-4xl text-cute-1 mb-8 animate-wiggle inline-block"
+        >
+          Sekali lagi, Happy Birthday! 🎂
+        </h3>
+        <br />
+
+        <!-- Tombol Balas WhatsApp yang Lebih Bouncy -->
+        <a
+          href="https://wa.me/6282165408246?text=Sayang,%20makasih%20ya%20website%20kejutannya!%20Aku%20seneng%20banget!%20"
+          target="_blank"
+          class="inline-flex items-center justify-center bg-gradient-to-r from-cute-1 to-pink-500 hover:from-pink-600 hover:to-cute-1 text-white font-black py-5 px-10 rounded-full shadow-[0_15px_30px_rgba(254,129,212,0.5)] transition-all duration-300 transform hover:scale-110 active:scale-95 text-xl relative overflow-hidden group"
+        >
+          <span
+            class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"
+          ></span>
+          <i class="fa-brands fa-whatsapp text-3xl mr-3 animate-pulse"></i>
+          Balas Pesan Ini Cintaku
+        </a>
+
+        <p class="mt-16 text-lg text-gray-400 font-bold">
+          Dibuat penuh
+          <i
+            class="fa-solid fa-heart text-cute-1 animate-pulse-cute inline-block mx-1"
+          ></i>
+          oleh kesayanganmu.
+        </p>
+      </footer>
+    </div>
+
+    <!-- FLOATING BOTTOM NAVIGATION -->
+    <nav
+      id="bottom-nav"
+      class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-md px-8 py-4 rounded-full shadow-[0_20px_40px_rgba(254,129,212,0.4)] z-50 flex space-x-8 border-[3px] border-cute-3 transition-all duration-1000 opacity-0 translate-y-24 w-max"
+    >
+      <a
+        href="#beranda"
+        class="nav-link text-cute-1 hover:text-pink-600 flex flex-col items-center transition transform hover:scale-125 hover:-translate-y-2"
+      >
+        <i class="fa-solid fa-house text-2xl mb-1"></i>
+        <span class="text-[11px] font-black">Beranda</span>
+      </a>
+      <a
+        href="#pesan"
+        class="nav-link text-cute-3 hover:text-pink-600 flex flex-col items-center transition transform hover:scale-125 hover:-translate-y-2"
+      >
+        <i class="fa-solid fa-envelope text-2xl mb-1"></i>
+        <span class="text-[11px] font-black">Pesan</span>
+      </a>
+      <a
+        href="#harapan"
+        class="nav-link text-cute-3 hover:text-pink-600 flex flex-col items-center transition transform hover:scale-125 hover:-translate-y-2"
+      >
+        <i class="fa-solid fa-star text-2xl mb-1"></i>
+        <span class="text-[11px] font-black">Harapan</span>
+      </a>
+      <a
+        href="#album"
+        class="nav-link text-cute-3 hover:text-pink-600 flex flex-col items-center transition transform hover:scale-125 hover:-translate-y-2"
+      >
+        <i class="fa-solid fa-images text-2xl mb-1"></i>
+        <span class="text-[11px] font-black">Album</span>
+      </a>
+    </nav>
+
+    <!-- Kontainer Iframe YouTube Tersembunyi -->
+    <div
+      id="youtube-audio-container"
+      class="hidden opacity-0 pointer-events-none absolute -z-50"
+    ></div>
+
+    <script>
+      // --- 1. Fungsi Ledakan Confetti & Buka Kado ---
+      function fireConfetti() {
+        var duration = 3000;
+        var end = Date.now() + duration;
+
+        (function frame() {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.8 },
+            colors: ["#FE81D4", "#FAACBF", "#FFEABB", "#ffffff"],
+          });
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.8 },
+            colors: ["#FE81D4", "#FAACBF", "#FFEABB", "#ffffff"],
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        })();
+      }
+
+      function openWebsite() {
+        const cover = document.getElementById("cover-screen");
+        const mainContent = document.getElementById("main-content");
+        const bottomNav = document.getElementById("bottom-nav");
+        const ytContainer = document.getElementById("youtube-audio-container");
+
+        // Ledakkan Confetti! 🎉
+        fireConfetti();
+
+        // Putar Youtube (Joy Enriquez)
+        ytContainer.innerHTML =
+          '<iframe style="border:none;" width="1" height="1" src="https://www.youtube.com/embed/EpXf0kIdndU?autoplay=1&loop=1&playlist=EpXf0kIdndU" allow="autoplay; encrypted-media"></iframe>';
+
+        // Animasi cover menghilang
+        cover.classList.add("open");
+
+        setTimeout(() => {
+          cover.style.display = "none";
+
+          // Tampilkan website
+          document.body.style.overflowY = "auto";
+          mainContent.classList.remove("hidden");
+
+          // Trigger reflow
+          void mainContent.offsetWidth;
+
+          mainContent.classList.remove("opacity-0");
+
+          // Munculkan menu
+          bottomNav.classList.remove("opacity-0", "translate-y-24");
+          bottomNav.classList.add("opacity-100", "translate-y-0");
+
+          revealOnScroll();
+          startParticles();
+        }, 1000);
+      }
+
+      // --- 2. Efek Trail Kursor Hati (Khusus Desktop) ---
+      let lastTrailTime = 0;
+      function createTrail(e) {
+        // Batasi pembuatan partikel kursor agar tidak lag
+        if (Date.now() - lastTrailTime < 50) return;
+        lastTrailTime = Date.now();
+
+        const trail = document.createElement("i");
+        trail.className = "fa-solid fa-heart cursor-trail";
+        trail.style.left = e.clientX + "px";
+        trail.style.top = e.clientY + "px";
+
+        // Variasi ukuran & warna
+        const size = Math.random() * 10 + 10; // 10px - 20px
+        trail.style.fontSize = size + "px";
+        trail.style.color = Math.random() > 0.5 ? "#FE81D4" : "#FAACBF";
+
+        document.body.appendChild(trail);
+
+        setTimeout(() => {
+          trail.remove();
+        }, 1000);
+      }
+
+      // --- 3. Animasi Scroll Reveal (Jelly Pop) ---
+      function revealOnScroll() {
+        const reveals = document.querySelectorAll(".reveal");
+        const windowHeight = window.innerHeight;
+        const elementVisible = 100;
+
+        reveals.forEach((reveal) => {
+          const elementTop = reveal.getBoundingClientRect().top;
+          if (elementTop < windowHeight - elementVisible) {
+            reveal.classList.add("active");
+          }
+        });
+      }
+      window.addEventListener("scroll", revealOnScroll);
+
+      // --- 4. Partikel Background Melayang ---
+      function createParticle() {
+        const particle = document.createElement("i");
+        const types = [
+          { icon: "fa-heart", color: "text-cute-1" },
+          { icon: "fa-star", color: "text-cute-2" },
+          { icon: "fa-circle", color: "text-white" },
+        ];
+        const type = types[Math.floor(Math.random() * types.length)];
+
+        particle.className = `fa-solid ${type.icon} ${type.color} particle drop-shadow-md`;
+        particle.style.left = Math.random() * 100 + "vw";
+
+        const size = Math.random() * 1.5 + 0.5;
+        particle.style.fontSize = size + "rem";
+
+        const duration = Math.random() * 8 + 6; // 6s - 14s
+        particle.style.animationDuration = duration + "s";
+
+        document.getElementById("particles-container").appendChild(particle);
+
+        setTimeout(() => particle.remove(), duration * 1000);
+      }
+
+      function startParticles() {
+        setInterval(createParticle, 500);
+      }
+
+      // --- 5. Highlight Tombol Menu Saat Di-scroll ---
+      const sections = document.querySelectorAll("section");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      window.addEventListener("scroll", () => {
+        let current = "";
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (scrollY >= sectionTop - sectionHeight / 3) {
+            current = section.getAttribute("id");
+          }
+        });
+
+        navLinks.forEach((link) => {
+          link.classList.remove("text-cute-1");
+          link.classList.add("text-cute-3");
+          if (link.getAttribute("href") === `#${current}`) {
+            link.classList.remove("text-cute-3");
+            link.classList.add("text-cute-1");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
